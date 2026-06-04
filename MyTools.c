@@ -59,12 +59,12 @@ void version()
 
 void help()
 {
-    printf("--version : blabla\n");
-    printf("--help : blabla\n");
-    printf("-send : blabla\n");
-    printf("-receive : blabla\n");
-    printf("-file : blabla\n");
-    printf("-socket : blabla\n");
+    printf("--version: kiírja a program:\n - verziószámot\n - elkészültének dátuma\n - fejlesztő neve\n");
+    printf("--help: tájékoztatás a lehetséges futtatásról\n");
+    printf("-send: Ez a küldő üzemmód\n");
+    printf("-receive: Ez a fogadó üzemmód\n");
+    printf("-file: fájl alapú kommunikációs üzemmód\n");
+    printf("-socket:socket alapú kommunikációs üzemmód\n");
 }
 
 int Measurement(int **Values)
