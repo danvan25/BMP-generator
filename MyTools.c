@@ -48,10 +48,6 @@ void version()
       }
     #pragma omp section
       {
-      printf("Verzió: Második próbálkozás\n");
-      }
-    #pragma omp section
-      {
       printf("Tárgy neve: Rendszerközeli programozás\n");
       }
     }
@@ -64,7 +60,13 @@ void help()
     printf("-send: Ez a küldő üzemmód\n");
     printf("-receive: Ez a fogadó üzemmód\n");
     printf("-file: fájl alapú kommunikációs üzemmód\n");
-    printf("-socket:socket alapú kommunikációs üzemmód\n");
+    printf("-socket: socket alapú kommunikációs üzemmód\n");
+    puts("");
+    puts("A ""-socket"" és a ""-receive"" kapcsolók sorrendje nem számít, illetve");
+    puts("a ""-file"" ""-send"" kapcsolók sorrendje sem számít.");
+    puts("Például:");
+    puts("./chart -receive -socket == ./chart -socket -receive");
+    puts("./chart -file -send == ./chart -send -file");
 }
 
 int Measurement(int **Values)
@@ -77,10 +79,6 @@ int Measurement(int **Values)
     seconds = time(NULL);
 
     T4 = localtime(&seconds);
-    //printf("%d:%d\n",(*T4).tm_min,(*T4).tm_sec);
-
-    //printf("tm_sec: %d\n",(*T4).tm_sec);
-    //printf("tm_min: %d\n",(*T4).tm_min);
 
         if( (*T4).tm_min >= 0 && 15 > (*T4).tm_min )
         {
@@ -101,8 +99,6 @@ int Measurement(int **Values)
 
     *Values = (int*)malloc(meres_szamok*sizeof(int));    
 
-    //int szamlalo[3] = {0,0,0};
-
     double rf;
 
     srand(time(NULL));
@@ -113,20 +109,15 @@ int Measurement(int **Values)
         rf = (double)rand()/((unsigned)RAND_MAX+1); 
         if(rf<0.428571) 
         {
-            //szamlalo[0]++;
             (*Values)[i]=(*Values)[i-1]+1;
         }  
         else if(rf < 0.78341)
         {
-            //szamlalo[1]++;
             (*Values)[i]=(*Values)[i-1]-1;
         }else
             {
-                //szamlalo[(int)((rf-0.2)/((1.0-0.2)/2))+1]++;
                 (*Values)[i]=(*Values)[i-1];
             }      
-        //int d = (int)((rf-0.2)/((1.0-0.2)/2))+1;
-        //printf("%d\n",d);
     }
 
     return meres_szamok;
@@ -356,6 +347,8 @@ void BMPcreator(int *Values,int NumValues)
 
     close(out);
 
+    puts("BMP image generated.\n");
+
 }
 
 int FindPID() {
@@ -447,20 +440,20 @@ void SendViaFile(int *Values, int NumValues)
         exit(-1);
     }else
     {
-        //Ide kell a signal
         kill(FPid,SIGUSR1);
     }
 }
 
 void ReceiveViaFile(int sig)
 {
+    puts("Received a signal.");
     char  *value;
     char filepath[N];
     value = getenv("HOME");
     
     sprintf(filepath, "%s/Measurement.txt",value);
 
-    FILE* fp = fopen("/home/danvan25/Measurement.txt","r");
+    FILE* fp = fopen(filepath,"r");
     int num_of_chars =1;
     char** char_array_ptr;
 
@@ -485,25 +478,15 @@ void ReceiveViaFile(int sig)
         
         num_of_chars= i;
         int* int_array= (int*)malloc(num_of_chars*sizeof(int));
-        //char_array_ptr = malloc(num_of_chars * sizeof(char *));
         i=0;
         
         while(fgets(sor,1000,fp))
         {  
             int_array[i]= atoi(sor);
-            //sor[strlen(sor)-1] ='\0';
-            //char_array_ptr[i] = malloc(strlen(sor) * sizeof(char));
-            //strcpy(char_array_ptr[i], sor);
-            //printf("%s\n",char_array_ptr[i]);
             i++;
         }
 
         fclose(fp);
-
-        /*for(int i=0;i<num_of_chars;i++)
-        {
-            printf("%d %d\n",i,int_array[i]);
-        }*/
 
         BMPcreator(int_array,num_of_chars);
         free(int_array);        
@@ -620,7 +603,6 @@ void ReceiveViaSocket()
          fprintf(stderr, "Receiving error.\n");
          exit(4);
       }
-      //printf("%d\n",NumValues);
       bytes = sendto(s, &NumValues, sizeof(int32_t), flag, (struct sockaddr *) &client, client_size);
 
       
