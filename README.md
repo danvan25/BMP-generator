@@ -47,12 +47,6 @@ The generated chart visualizes simulated sensor measurements over time.
 example_output.bmp
 ```
 
-Then GitHub will display it automatically:
-
-```md
-![Example Output](example_output.bmp)
-```
-
 Example:
 
 ![Example Output](example_output.bmp)
