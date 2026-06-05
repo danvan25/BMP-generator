@@ -41,12 +41,6 @@ The project was developed as a system-level programming assignment and focuses o
 
 The generated chart visualizes simulated sensor measurements over time.
 
-> Save the example image in the repository root as:
-
-```text
-example_output.bmp
-```
-
 Example:
 
 ![Example Output](example_output.bmp)
